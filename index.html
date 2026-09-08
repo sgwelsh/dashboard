@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Risk Reduction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .emblem {
+            margin-top: 30px;
+            margin-bottom: 20px;
+            max-width: 200px; /* Reduced from 400px to 200px (50% smaller) */
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: float 6s ease-in-out infinite;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            background-color: white;
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            position: relative;
+            padding: 0 20px;
+        }
+        
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff9a56, #ff6a88, #d57eeb);
+            border-radius: 10px;
+        }
+        
+        .subheadings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .subheading {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            height: 80px; /* Fixed height for uniform sizing */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .subheading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .subheading:hover::before {
+            opacity: 1;
+        }
+        
+        .subheading:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subheading a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: 500;
+            z-index: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .subheading:hover a {
+            color: white;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .subheadings {
+                grid-template-columns: 1fr;
+            }
+        }
+.subheadings {
+    margin-bottom: 40px; /* Add space below the buttons */
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        
+        <h1 class="title">Hazelwood Fire Department<br>Fire Marshal Dash Board</h1>
+        
+        <div class="subheadings">
+            <div class="subheading">
+                <a href="#">Inspections</a>
+            </div>
+            <div class="subheading">
+                <a href="#">Permits</a>
+            </div>
+            <div class="subheading">
+                <a href="#">Investigations</a>
+            </div>
+            <div class="subheading">
+                <a href="#">Smoke Detectors</a>
+            </div>
+            <div class="subheading">
+                <a href="#">Violations</a>
+            </div>
+            <div class="subheading">
+                <a href="#">Code Modifications</a>
+            </div>
+            <div class="subheading">
+                <a href="#">Code Adoptions</a>
+            </div>
+            <div class="subheading">
+                <a href="#">Occupancies (by type etc)</a>
+            </div>
+            <div class="subheading">
+                <a href="#">Structures (By component etc)</a>
+            </div>
+            <div class="subheading">
+                <a href="#">Monthly/Weekly/Yearly Reports</a>
+            </div>
+	    <div class="subheading">
+	        <a href="#">Fire Drills</a>
+	    </div>
+	    <div class="subheading">
+    	    <a href="#">Future Plans</a>
+	    </div>
+        </div>
+<img class="emblem
+" src="https://github.com/sgwelsh/Media/blob/main/VeniceAI_Os8SsvW.png?raw=true" alt="Community Risk Reduction Emblem">
+    </div>
+    
+    <script>
+        // Add some interactive behavior to the subheadings
+        document.querySelectorAll('.subheading').forEach(item => {
+            item.addEventListener('click', event => {
+                // Create a ripple effect on click
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.7)';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                ripple.style.pointerEvents = 'none';
+                
+                const rect = item.getBoundingClientRect();
+                ripple.style.left = `${event.clientX - rect.left}px`;
+                ripple.style.top = `${event.clientY - rect.top}px`;
+                
+                item.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        // Add CSS animation for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    width: 200px;
+                    height: 200px;
+                    margin-left: -90px;
+                    margin-top: -90px;
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
