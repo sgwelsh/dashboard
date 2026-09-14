@@ -156,6 +156,88 @@
 .subheadings {
     margin-bottom: 40px; /* Add space below the buttons */
 }
+		/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.close-modal {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+/* Table Styles */
+.csv-grid {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.csv-grid th {
+    background: linear-gradient(90deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: white;
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 15px;
+}
+
+.csv-grid td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.csv-grid tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.csv-grid tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Progress Bar Styles */
+.progress-cell {
+    width: 100%;
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745, #5cb85c);
+    border-radius: 10px;
+}
     </style>
 </head>
 <body>
@@ -199,9 +281,9 @@
 	    <div class="subheading">
     	    <a href="#">Brycer (ITM)</a>
 	    </div>
-			  <div class="subheading">
-                <a href="#">Site Progress</a>
-            </div>
+			<div class="subheading">
+    <a href="#" id="reportsButton">Site Progress</a>
+</div>
         </div>
 <img class="emblem
 " src="https://github.com/sgwelsh/Media/blob/main/VeniceAI_Os8SsvW.png?raw=true" alt="Community Risk Reduction Emblem">
@@ -286,6 +368,111 @@
             }
         }, 3000);
     });
+	   // Add this to your existing script section
+document.getElementById('reportsButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Create modal if it doesn't exist
+    let modal = document.getElementById('reportsModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'reportsModal';
+        modal.className = 'modal';
+        
+        const modalContent = document.createElement('div');
+        modalContent.className = 'modal-content';
+        
+        const closeModal = document.createElement('span');
+        closeModal.className = 'close-modal';
+        closeModal.innerHTML = '&times;';
+        
+        const title = document.createElement('h2');
+        title.textContent = 'Website Development Progress';
+        
+        const tableContainer = document.createElement('div');
+        tableContainer.id = 'csvTableContainer';
+        
+        modalContent.appendChild(closeModal);
+        modalContent.appendChild(title);
+        modalContent.appendChild(tableContainer);
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
+        
+        // Close modal when clicking X
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+    
+    // Display modal
+    modal.style.display = 'block';
+    
+    // Fetch and display CSV data
+    fetch('Progress.csv')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(csvData => {
+            const tableContainer = document.getElementById('csvTableContainer');
+            const table = document.createElement('table');
+            table.className = 'csv-grid';
+            
+            // Parse CSV and create table
+            const rows = csvData.split('\n');
+            rows.forEach((row, index) => {
+                if (row.trim() === '') return; // Skip empty rows
+                
+                const tr = document.createElement('tr');
+                const cells = row.split(',');
+                
+                cells.forEach((cell, cellIndex) => {
+                    const cellContent = cell.trim();
+                    const td = document.createElement(index === 0 ? 'th' : 'td');
+                    
+                    // Check if this might be a progress percentage (contains %)
+                    if (cellContent.includes('%') && index > 0) {
+                        const percentage = parseInt(cellContent.replace('%', '').trim());
+                        const progressBarContainer = document.createElement('div');
+                        progressBarContainer.className = 'progress-cell';
+                        
+                        const progressBar = document.createElement('div');
+                        progressBar.className = 'progress-bar';
+                        progressBar.style.width = percentage + '%';
+                        
+                        progressBarContainer.appendChild(progressBar);
+                        td.appendChild(progressBarContainer);
+                        
+                        const percentageText = document.createElement('div');
+                        percentageText.textContent = cellContent;
+                        td.appendChild(percentageText);
+                    } else {
+                        td.textContent = cellContent;
+                    }
+                    
+                    tr.appendChild(td);
+                });
+                
+                table.appendChild(tr);
+            });
+            
+            tableContainer.innerHTML = '';
+            tableContainer.appendChild(table);
+        })
+        .catch(error => {
+            const tableContainer = document.getElementById('csvTableContainer');
+            tableContainer.innerHTML = '<p>Error loading data: ' + error.message + '</p>';
+        });
+});
 </script>
 </body>
 </html>
