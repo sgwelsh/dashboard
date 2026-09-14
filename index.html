@@ -165,8 +165,8 @@
         <h1 class="title">Hazelwood Fire Department<br>Fire Marshal Dash Board</h1>
         
         <div class="subheadings">
-            <div class="subheading">
-    <a href="https://hazelwoodmo.sharepoint.com/:x:/r/sites/FirePreventionBureau/_layouts/15/Doc.aspx?sourcedoc=%7B9CDFA0B9-3A45-45FD-B450-87CE96CD24BC%7D&file=Inspection%20list.xlsx&action=default&mobileredirect=true" target="_blank">Inspections</a>
+           <div class="subheading">
+    <a href="https://hazelwoodmo.sharepoint.com/:x:/r/sites/FirePreventionBureau/_layouts/15/Doc.aspx?sourcedoc=%7B9CDFA0B9-3A45-45FD-B450-87CE96CD24BC%7D&file=Inspection%20list.xlsx&action=default&mobileredirect=true" target="_blank" id="inspections-link">Inspections</a>
 </div>
             <div class="subheading">
                 <a href="https://www.hazelwoodmo.org/224/Building-Department-and-Code-Enforcement">Permits</a>
@@ -206,46 +206,85 @@
 " src="https://github.com/sgwelsh/Media/blob/main/VeniceAI_Os8SsvW.png?raw=true" alt="Community Risk Reduction Emblem">
     </div>
     
-    <script>
-        // Add some interactive behavior to the subheadings
-        document.querySelectorAll('.subheading').forEach(item => {
-            item.addEventListener('click', event => {
-                // Create a ripple effect on click
-                const ripple = document.createElement('span');
-                ripple.style.position = 'absolute';
-                ripple.style.borderRadius = '50%';
-                ripple.style.background = 'rgba(255, 255, 255, 0.7)';
-                ripple.style.width = '20px';
-                ripple.style.height = '20px';
-                ripple.style.animation = 'ripple 0.6s ease-out';
-                ripple.style.pointerEvents = 'none';
-                
-                const rect = item.getBoundingClientRect();
-                ripple.style.left = `${event.clientX - rect.left}px`;
-                ripple.style.top = `${event.clientY - rect.top}px`;
-                
-                item.appendChild(ripple);
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
+   <script>
+    // Keep your existing ripple effect code
+    document.querySelectorAll('.subheading').forEach(item => {
+        item.addEventListener('click', event => {
+            // Create a ripple effect on click
+            const ripple = document.createElement('span');
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 255, 255, 0.7)';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            ripple.style.animation = 'ripple 0.6s ease-out';
+            ripple.style.pointerEvents = 'none';
+            
+            const rect = item.getBoundingClientRect();
+            ripple.style.left = `${event.clientX - rect.left}px`;
+            ripple.style.top = `${event.clientY - rect.top}px`;
+            
+            item.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
         });
-        
-        // Add CSS animation for ripple effect
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    width: 200px;
-                    height: 200px;
-                    margin-left: -90px;
-                    margin-top: -90px;
-                    opacity: 0;
-                }
+    });
+    
+    // Add CSS animation for ripple effect
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                width: 200px;
+                height: 200px;
+                margin-left: -90px;
+                margin-top: -90px;
+                opacity: 0;
             }
-        `;
-        document.head.appendChild(style);
-    </script>
+        }
+    `;
+    document.head.appendChild(style);
+
+    // NEW: Access checking code for SharePoint link
+    document.getElementById('inspections-link').addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        
+        // Open in new window to check access
+        const newWindow = window.open(href, '_blank');
+        
+        // Check after a delay if the window redirected to login/error page
+        setTimeout(() => {
+            try {
+                // If we can access the window, check its URL
+                if (newWindow.location.href.includes('login') || 
+                    newWindow.location.href.includes('accessdenied') ||
+                    newWindow.location.href.includes('error')) {
+                    
+                    // Show user-friendly message
+                    const message = document.createElement('div');
+                    message.style.position = 'fixed';
+                    message.style.bottom = '20px';
+                    message.style.left = '50%';
+                    message.style.transform = 'translateX(-50%)';
+                    message.style.background = '#ff6a88';
+                    message.style.color = 'white';
+                    message.style.padding = '10px 20px';
+                    message.style.borderRadius = '5px';
+                    message.style.zIndex = '1000';
+                    message.textContent = 'Sorry, access to this resource requires authentication.';
+                    document.body.appendChild(message);
+                    
+                    // Remove message after 5 seconds
+                    setTimeout(() => message.remove(), 5000);
+                }
+            } catch (error) {
+                // Cross-origin error - can't check the URL
+                console.log('Cannot verify access due to security restrictions');
+            }
+        }, 3000);
+    });
+</script>
 </body>
 </html>
