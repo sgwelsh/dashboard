@@ -32,7 +32,7 @@
         .emblem {
             margin-top: 30px;
             margin-bottom: 20px;
-            max-width: 200px; /* Reduced from 400px to 200px (50% smaller) */
+            max-width: 200px;
             width: 100%;
             height: auto;
             border-radius: 50%;
@@ -72,7 +72,7 @@
             gap: 20px;
             width: 100%;
             margin-top: 20px;
-            margin-bottom: 40px; /* Add space below the buttons */
+            margin-bottom: 40px;
         }
         
         .subheading {
@@ -86,7 +86,7 @@
             position: relative;
             border: 2px solid transparent;
             background-clip: padding-box;
-            height: 80px; /* Fixed height for uniform sizing */
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -237,6 +237,14 @@
             background: linear-gradient(90deg, #28a745, #5cb85c);
             border-radius: 10px;
         }
+
+        /* Loading indicator */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -365,7 +373,7 @@
             }, 3000);
         });
 
-        // Site Progress modal functionality
+        // Site Progress modal functionality - Updated version
         document.getElementById('siteProgressButton').addEventListener('click', function(e) {
             e.preventDefault();
             
@@ -386,11 +394,17 @@
                 const title = document.createElement('h2');
                 title.textContent = 'Website Development Progress';
                 
+                const loadingMessage = document.createElement('div');
+                loadingMessage.className = 'loading';
+                loadingMessage.id = 'loadingMessage';
+                loadingMessage.textContent = 'Loading data...';
+                
                 const tableContainer = document.createElement('div');
                 tableContainer.id = 'csvTableContainer';
                 
                 modalContent.appendChild(closeModal);
                 modalContent.appendChild(title);
+                modalContent.appendChild(loadingMessage);
                 modalContent.appendChild(tableContainer);
                 modal.appendChild(modalContent);
                 document.body.appendChild(modal);
@@ -411,65 +425,105 @@
             // Display modal
             modal.style.display = 'block';
             
-            // Fetch and display CSV data
+            // Clear previous content and show loading
+            const tableContainer = document.getElementById('csvTableContainer');
+            const loadingMessage = document.getElementById('loadingMessage');
+            tableContainer.innerHTML = '';
+            loadingMessage.style.display = 'block';
+            
+            // Try multiple approaches to fetch the CSV data
+            fetchCSVData();
+        });
+        
+        // Function to fetch CSV data
+        function fetchCSVData() {
+            const tableContainer = document.getElementById('csvTableContainer');
+            const loadingMessage = document.getElementById('loadingMessage');
+            
+            // Try direct relative path first
             fetch('Progress.csv')
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        throw new Error('Direct fetch failed, trying GitHub raw URL');
                     }
                     return response.text();
                 })
                 .then(csvData => {
-                    const tableContainer = document.getElementById('csvTableContainer');
-                    const table = document.createElement('table');
-                    table.className = 'csv-grid';
-                    
-                    // Parse CSV and create table
-                    const rows = csvData.split('\n');
-                    rows.forEach((row, index) => {
-                        if (row.trim() === '') return; // Skip empty rows
-                        
-                        const tr = document.createElement('tr');
-                        const cells = row.split(',');
-                        
-                        cells.forEach((cell, cellIndex) => {
-                            const cellContent = cell.trim();
-                            const td = document.createElement(index === 0 ? 'th' : 'td');
-                            
-                            // Check if this might be a progress percentage (contains %)
-                            if (cellContent.includes('%') && index > 0) {
-                                const percentage = parseInt(cellContent.replace('%', '').trim());
-                                const progressBarContainer = document.createElement('div');
-                                progressBarContainer.className = 'progress-cell';
-                                
-                                const progressBar = document.createElement('div');
-                                progressBar.className = 'progress-bar';
-                                progressBar.style.width = percentage + '%';
-                                
-                                progressBarContainer.appendChild(progressBar);
-                                td.appendChild(progressBarContainer);
-                                
-                                const percentageText = document.createElement('div');
-                                percentageText.textContent = cellContent;
-                                td.appendChild(percentageText);
-                            } else {
-                                td.textContent = cellContent;
-                            }
-                            
-                            tr.appendChild(td);
-                        });
-                        
-                        table.appendChild(tr);
-                    });
-                    
-                    tableContainer.innerHTML = '';
-                    tableContainer.appendChild(table);
+                    displayCSVData(csvData);
+                    loadingMessage.style.display = 'none';
                 })
                 .catch(error => {
-                    const tableContainer = document.getElementById('csvTableContainer');
-                    tableContainer.innerHTML = '<p>Error loading data: ' + error.message + '</p>';
+                    console.log('Direct fetch failed, trying GitHub raw URL...');
+                    
+                    // Try GitHub raw URL - replace with your actual repository path
+                    const githubRawURL = 'https://raw.githubusercontent.com/sgwelsh/hazelwood-fire-dashboard/main/Progress.csv';
+                    
+                    fetch(githubRawURL)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('GitHub raw URL failed');
+                            }
+                            return response.text();
+                        })
+                        .then(csvData => {
+                            displayCSVData(csvData);
+                            loadingMessage.style.display = 'none';
+                        })
+                        .catch(error => {
+                            loadingMessage.textContent = 'Error loading data. Please ensure Progress.csv exists in the repository.';
+                            tableContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+                        });
                 });
-        });
+        }
+        
+        // Function to display CSV data in a table
+        function displayCSVData(csvData) {
+            const tableContainer = document.getElementById('csvTableContainer');
+            const table = document.createElement('table');
+            table.className = 'csv-grid';
+            
+            // Parse CSV and create table
+            const rows = csvData.split('\n');
+            rows.forEach((row, index) => {
+                if (row.trim() === '') return; // Skip empty rows
+                
+                const tr = document.createElement('tr');
+                const cells = row.split(',');
+                
+                cells.forEach((cell, cellIndex) => {
+                    const cellContent = cell.trim();
+                    const td = document.createElement(index === 0 ? 'th' : 'td');
+                    
+                    // Check if this might be a progress percentage (contains %)
+                    if (cellContent.includes('%') && index > 0) {
+                        const percentage = parseInt(cellContent.replace('%', '').trim());
+                        const progressBarContainer = document.createElement('div');
+                        progressBarContainer.className = 'progress-cell';
+                        
+                        const progressBar = document.createElement('div');
+                        progressBar.className = 'progress-bar';
+                        progressBar.style.width = percentage + '%';
+                        
+                        progressBarContainer.appendChild(progressBar);
+                        td.appendChild(progressBarContainer);
+                        
+                        const percentageText = document.createElement('div');
+                        percentageText.textContent = cellContent;
+                        percentageText.style.marginTop = '5px';
+                        td.appendChild(percentageText);
+                    } else {
+                        td.textContent = cellContent;
+                    }
+                    
+                    tr.appendChild(td);
+                });
+                
+                table.appendChild(tr);
+            });
+            
+            tableContainer.innerHTML = '';
+            tableContainer.appendChild(table);
+        }
     </script>
 </body>
 </html>
