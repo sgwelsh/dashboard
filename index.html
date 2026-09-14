@@ -427,4 +427,49 @@
                     // Parse CSV and create table
                     const rows = csvData.split('\n');
                     rows.forEach((row, index) => {
-                        if (row
+                        if (row.trim() === '') return; // Skip empty rows
+                        
+                        const tr = document.createElement('tr');
+                        const cells = row.split(',');
+                        
+                        cells.forEach((cell, cellIndex) => {
+                            const cellContent = cell.trim();
+                            const td = document.createElement(index === 0 ? 'th' : 'td');
+                            
+                            // Check if this might be a progress percentage (contains %)
+                            if (cellContent.includes('%') && index > 0) {
+                                const percentage = parseInt(cellContent.replace('%', '').trim());
+                                const progressBarContainer = document.createElement('div');
+                                progressBarContainer.className = 'progress-cell';
+                                
+                                const progressBar = document.createElement('div');
+                                progressBar.className = 'progress-bar';
+                                progressBar.style.width = percentage + '%';
+                                
+                                progressBarContainer.appendChild(progressBar);
+                                td.appendChild(progressBarContainer);
+                                
+                                const percentageText = document.createElement('div');
+                                percentageText.textContent = cellContent;
+                                td.appendChild(percentageText);
+                            } else {
+                                td.textContent = cellContent;
+                            }
+                            
+                            tr.appendChild(td);
+                        });
+                        
+                        table.appendChild(tr);
+                    });
+                    
+                    tableContainer.innerHTML = '';
+                    tableContainer.appendChild(table);
+                })
+                .catch(error => {
+                    const tableContainer = document.getElementById('csvTableContainer');
+                    tableContainer.innerHTML = '<p>Error loading data: ' + error.message + '</p>';
+                });
+        });
+    </script>
+</body>
+</html>
