@@ -7,9 +7,12 @@ exports.handler = async (event) => {
 
   try {
     const { username, password } = JSON.parse(event.body);
-    const token = process.env.GITHUB_TOKEN;
+    console.log('Received credentials:', username, '********'); // Log without actual password
     
-    // Update YOUR-USERNAME with your actual GitHub username
+    const token = process.env.GITHUB_TOKEN;
+    console.log('Token exists:', !!token); // Check if token is set
+    
+    // IMPORTANT: Replace 'sgwelsh' below with your actual GitHub username
     const response = await fetch('https://api.github.com/repos/sgwelsh/firemarshal-credentials/contents/credentials.json', {
       headers: {
         'Authorization': `token ${token}`,
@@ -17,14 +20,21 @@ exports.handler = async (event) => {
       }
     });
     
+    console.log('GitHub response status:', response.status); // Log response status
+    
     if (!response.ok) {
+      console.log('GitHub error body:', await response.text());
       return { statusCode: 401, body: 'Failed to fetch credentials' };
     }
     
     const credentials = await response.json();
+    console.log('Fetched credentials:', credentials);
+    
     const userExists = credentials.users.find(u => 
       u.username === username && u.password === password
     );
+    
+    console.log('User exists:', !!userExists);
     
     return {
       statusCode: 200,
