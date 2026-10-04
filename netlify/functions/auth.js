@@ -1,19 +1,15 @@
 const fetch = require('node-fetch');
 
-exports.handler = async (event, context) => {
-  // Only allow POST requests
+exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   try {
-    // Parse the request body
     const { username, password } = JSON.parse(event.body);
-    
-    // Get your GitHub token from environment variables
     const token = process.env.GITHUB_TOKEN;
     
-    // Fetch credentials from your private repository
+    // Update YOUR-USERNAME with your actual GitHub username
     const response = await fetch('https://api.github.com/repos/sgwelsh/firemarshal-credentials/contents/credentials.json', {
       headers: {
         'Authorization': `token ${token}`,
@@ -22,12 +18,10 @@ exports.handler = async (event, context) => {
     });
     
     if (!response.ok) {
-      return { statusCode: 500, body: 'Failed to fetch credentials' };
+      return { statusCode: 401, body: 'Failed to fetch credentials' };
     }
     
     const credentials = await response.json();
-    
-    // Check if credentials match
     const userExists = credentials.users.find(u => 
       u.username === username && u.password === password
     );
@@ -38,6 +32,9 @@ exports.handler = async (event, context) => {
     };
   } catch (error) {
     console.error('Authentication error:', error);
-    return { statusCode: 500, body: 'Authentication error' };
+    return { 
+      statusCode: 500, 
+      body: JSON.stringify({ success: false, error: error.message })
+    };
   }
 };
