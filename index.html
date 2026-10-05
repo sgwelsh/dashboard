@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community Risk Reduction</title>
@@ -121,7 +120,6 @@
             .subheadings { grid-template-columns: 1fr; }
         }
 
-        /* Modal Styles - simplified */
         .modal {
             display: none;
             position: fixed;
@@ -158,7 +156,6 @@
 
         .close-modal:hover { color: #333; }
 
-        /* Table Styles - simplified */
         .csv-grid {
             width: 100%;
             border-collapse: collapse;
@@ -182,7 +179,6 @@
             background-color: #f8f9fa;
         }
 
-        /* Progress Bar - simplified */
         .progress-bar-container {
             width: 100%;
             height: 20px;
@@ -206,146 +202,4 @@
         <div class="subheadings">
             <div class="subheading">
                 <a href="https://hazelwoodmo.sharepoint.com/:x:/r/sites/FirePreventionBureau/_layouts/15/Doc.aspx?sourcedoc=%7B9CDFA0B9-3A45-45FD-B450-87CE96CD24BC%7D&file=Inspection%20list.xlsx&action=default&mobileredirect=true" target="_blank">Inspections</a>
-            </div>
-            <div class="subheading">
-                <a href="https://civicgov4.com/mo_hazelwood/dashboard" target="_blank">Permits</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Investigations</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Smoke Detectors</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Violations</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Code Modifications</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Code Adoptions</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Occupancies (by type etc)</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Structures (By component etc)</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Fire Drills</a>
-            </div>
-            <div class="subheading">
-                <a href="#">Brycer (ITM)</a>
-            </div>
-            <div class="subheading">
-                <a href="#" id="siteProgressButton">Site Progress</a>
-            </div>
-        </div>
-        
-        <img class="emblem" src="https://github.com/sgwelsh/Media/blob/main/VeniceAI_Os8SsvW.png?raw=true" alt="Community Risk Reduction Emblem">
-    </div>
-
-    <!-- Modal - simplified structure -->
-    <div id="reportsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Website Development Progress</h2>
-            <div id="csvTableContainer">
-                <p>Loading data...</p>
-            </div>
-        </div>
-    </div>
-    
-    <script>
-        // Simplified script - removed ripple effects and SharePoint access checking
-        
-        // Modal functionality
-        const modal = document.getElementById('reportsModal');
-        const modalBtn = document.getElementById('siteProgressButton');
-        const closeBtn = document.querySelector('.close-modal');
-        const tableContainer = document.getElementById('csvTableContainer');
-        
-        modalBtn.addEventListener('click', function() {
-            modal.style.display = 'block';
-            loadCSVData();
-        });
-        
-        closeBtn.addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-        
-        window.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-        
-        // Function to load CSV data
-        function loadCSVData() {
-            tableContainer.innerHTML = '<p>Loading data...</p>';
-            
-            // Try direct relative path first
-            fetch('Progress.csv')
-                .then(response => {
-                    if (!response.ok) throw new Error('Direct fetch failed');
-                    return response.text();
-                })
-                .then(csvData => {
-                    displayCSVData(csvData);
-                })
-                .catch(error => {
-                    // Try GitHub raw URL as fallback
-                    fetch('https://raw.githubusercontent.com/sgwelsh/hazelwood-fire-dashboard/main/Progress.csv')
-                        .then(response => {
-                            if (!response.ok) throw new Error('GitHub fetch failed');
-                            return response.text();
-                        })
-                        .then(csvData => {
-                            displayCSVData(csvData);
-                        })
-                        .catch(error => {
-                            tableContainer.innerHTML = '<p>Error loading data. Please check if Progress.csv exists.</p>';
-                        });
-                });
-        }
-        
-        // Function to display CSV data in a table
-        function displayCSVData(csvData) {
-            const rows = csvData.split('\n');
-            let tableHTML = '<table class="csv-grid">';
-            
-            rows.forEach((row, index) => {
-                if (row.trim() === '') return;
-                
-                tableHTML += '<tr>';
-                const cells = row.split(',');
-                
-                cells.forEach(cell => {
-                    const cellContent = cell.trim();
-                    const tag = index === 0 ? 'th' : 'td';
-                    
-                    // Check for percentage and create progress bar
-                    if (cellContent.includes('%') && index > 0) {
-                        const percentage = parseInt(cellContent.replace('%', '').trim());
-                        tableHTML += `
-                            <${tag}>
-                                <div>${cellContent.replace(/%/g, '')}%</div>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar" style="width: ${percentage}%"></div>
-                                </div>
-                            </${tag}>
-                        `;
-                    } else {
-                        tableHTML += `<${tag}>${cellContent}</${tag}>`;
-                    }
-                });
-                
-                tableHTML += '</tr>';
-            });
-            
-            tableHTML += '</table>';
-            tableContainer.innerHTML = tableHTML;
-        }
-    </script>
-</body>
-</html>
+            </
