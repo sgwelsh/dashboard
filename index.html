@@ -1,27 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-// Check if user is authenticated
-(async function() {
-    try {
-        // This will fail if not logged in, since we're not POSTing credentials
-        const response = await fetch('/.netlify/functions/auth', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username: '', password: '' })
-        });
-        
-        // If we get here, redirect to login
-        window.location.href = 'login.html';
-    } catch (error) {
-        // If there's an error, redirect to login
-        window.location.href = 'login.html';
-    }
-})();
-</script>
+  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community Risk Reduction</title>
